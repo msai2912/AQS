@@ -4,8 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase environment variables are not set');
+}
+
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function HomePage() {
@@ -84,6 +89,10 @@ export default function HomePage() {
       <h1 className="text-4xl font-bold mb-10 text-gray-800">
         University Queue Management System
       </h1>
+      
+      <Link href="/admin" className="text-blue-500 underline mt-4">
+        Go to Admin Dashboard
+      </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
         {/* Canteen */}
@@ -99,10 +108,7 @@ export default function HomePage() {
           >
             Add to Queue
           </button>
-          <Link
-            href="/menu/canteen"
-            className="mt-4 text-green-600 underline"
-          >
+          <Link href="/menu/canteen" className="mt-4 text-green-600 underline">
             Go to Canteen Menu
           </Link>
         </div>
