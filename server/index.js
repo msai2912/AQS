@@ -1,58 +1,60 @@
+// server.js
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
-
 const server = http.createServer(app);
+
+// Initialize Socket.IO server with CORS settings
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000', // Frontend URL
     methods: ['GET', 'POST'],
   },
 });
 
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// In-memory queue status (for demonstration purposes)
 let queueStatus = {
   canteen: 0,
-  feeCounter: 0,
+  fee_counter: 0,
   stationary: 0,
 };
 
-const orders = [];
-
-// When a client connects
+// Socket.IO connection handler
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
-  // Send current queue status to client
-  socket.emit('queueUpdate', queueStatus);
+  // Handle 'joinQueue' event
+  socket.on('joinQueue', ({ service }) => {
+    if (queueStatus.hasOwnProperty(service)) {
+      queueStatus[service] += 1;
 
-  // Handle queue increment requests
-  socket.on('incrementQueue', (service) => {
-    if (queueStatus[service] !== undefined) {
-      queueStatus[service]++;
-      const order = {
-        id: Date.now(), // Unique timestamp ID
+      // Emit updated queue status to all connected clients
+      io.emit('queueUpdate', {
         service,
-        timestamp: new Date().toLocaleString(),
-      };
-      orders.push(order); // Save order
-      console.log(`New order added:`, order);
+        queue: queueStatus[service],
+      });
 
-      // Broadcast updated queue status and orders to all clients
-      io.emit('queueUpdate', queueStatus);
-      io.emit('orderUpdate', orders);
+      console.log(`Updated ${service} queue: ${queueStatus[service]}`);
+    } else {
+      console.error(`Unknown service: ${service}`);
     }
   });
 
+  // Handle client disconnect
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });
 });
 
-const PORT = 4000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Start the server on port 3001
+server.listen(3001, () => {
+  console.log('Socket.IO server running at http://localhost:3001');
 });

@@ -24,6 +24,8 @@
     ]
   },
   "include": [
+    "app",
+    "app/hooks",
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",

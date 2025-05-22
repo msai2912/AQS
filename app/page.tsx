@@ -85,76 +85,24 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
-      <h1 className="text-4xl font-bold mb-10 text-gray-800">
+    <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold text-gray-800 mb-10">
         University Queue Management System
       </h1>
-      
-      <Link href="/admin" className="text-blue-500 underline mt-4">
-        Go to Admin Dashboard
-      </Link>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
-        {/* Canteen */}
-        <div className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-4">Canteen</h2>
-          <p className="text-gray-600 mb-2">Current Queue:</p>
-          <p className="text-3xl font-bold text-green-600 mb-4">
-            {queueStatus.canteen}
-          </p>
-          <button
-            onClick={() => incrementQueue('canteen')}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-          >
-            Add to Queue
-          </button>
-          <Link href="/menu/canteen" className="mt-4 text-green-600 underline">
-            Go to Canteen Menu
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
+        {[
+          { title: "Canteen", href: "/menu/canteen", color: "green" },
+          { title: "Fee Counter", href: "/menu/fee-counter", color: "blue" },
+          { title: "Stationary", href: "/menu/stationary", color: "purple" }
+        ].map(({ title, href, color }) => (
+          <Link href={href} key={title} className={`bg-white shadow-md rounded-xl p-6 border-t-4 border-${color}-500 hover:shadow-lg transition-all`}>
+            <div className="flex flex-col items-center">
+              <h2 className={`text-2xl font-semibold text-${color}-600`}>{title}</h2>
+              <p className="text-gray-500 mt-2">Click to manage queue</p>
+            </div>
           </Link>
-        </div>
-
-        {/* Fee Counter */}
-        <div className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-4">Fee Counter</h2>
-          <p className="text-gray-600 mb-2">Current Queue:</p>
-          <p className="text-3xl font-bold text-blue-600 mb-4">
-            {queueStatus.fee_counter}
-          </p>
-          <button
-            onClick={() => incrementQueue('fee_counter')}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Add to Queue
-          </button>
-          <Link
-            href="/menu/fee-counter"
-            className="mt-4 text-blue-600 underline"
-          >
-            Go to Fee Counter
-          </Link>
-        </div>
-
-        {/* Stationary */}
-        <div className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-4">Stationary</h2>
-          <p className="text-gray-600 mb-2">Current Queue:</p>
-          <p className="text-3xl font-bold text-purple-600 mb-4">
-            {queueStatus.stationary}
-          </p>
-          <button
-            onClick={() => incrementQueue('stationary')}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
-          >
-            Add to Queue
-          </button>
-          <Link
-            href="/menu/stationary"
-            className="mt-4 text-purple-600 underline"
-          >
-            Go to Stationary
-          </Link>
-        </div>
+        ))}
       </div>
     </div>
   );
-}
+}  
